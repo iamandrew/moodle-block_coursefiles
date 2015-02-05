@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/blocks/coursefiles/locallib.php');
+
 class block_coursefiles extends block_base {
     function init() {
         $this->title = get_string('pluginname', 'block_coursefiles');
@@ -66,21 +68,21 @@ class block_coursefiles extends block_base {
 
         // Get the top file files used on the course by size.
         $sql = "SELECT f.*
-                FROM mdl_files f
-                JOIN mdl_context ctx ON f.contextid = ctx.id
-                WHERE CONCAT(ctx.path, '/') LIKE '$contextcheck'
+                FROM {files} f
+                JOIN {context} ctx ON f.contextid = ctx.id
+                WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
                 AND f.filename != '.'
-                ORDER BY f.filesize DESC
-                LIMIT 5";
-        $filelist = $DB->get_records_sql($sql);
+                ORDER BY f.filesize DESC";
+        $params = array($contextcheck);
+        $filelist = $DB->get_records_sql($sql, $params, 0, 5);
 
         // Get the sum total of file storage usage for the course.
         $sql = "SELECT SUM(f.filesize)
-                FROM mdl_files f
-                JOIN mdl_context ctx ON f.contextid = ctx.id
-                WHERE CONCAT(ctx.path, '/') LIKE '$contextcheck'
+                FROM {files} f
+                JOIN {context} ctx ON f.contextid = ctx.id
+                WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
                 AND f.filename != '.'";
-        $sizetotal = $DB->get_field_sql($sql);
+        $sizetotal = $DB->get_field_sql($sql, $params);
 
         if (!$filelist) {
             $this->content->text = get_string('nofilesoncourse', 'block_coursefiles');

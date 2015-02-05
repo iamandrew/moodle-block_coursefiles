@@ -23,6 +23,7 @@
  */
 
 require('../../config.php');
+require_once($CFG->dirroot.'/blocks/coursefiles/locallib.php');
 
 require_login();
 $courseid = required_param('courseid', PARAM_INT); // If no courseid is given.
@@ -31,25 +32,13 @@ $course = $DB->get_record('course', array('id' => $courseid));
 $context = context_course::instance($courseid);
 $PAGE->set_course($course);
 $PAGE->set_url('/blocks/coursefiles/view.php', array('courseid' => $courseid));
+$PAGE->set_title($course->fullname.' '.get_string('files'));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('course');
 $PAGE->navbar->add(get_string('pluginname', 'block_coursefiles'));
 
-$contextcheck = $context->path . '/%';
-$sql = "SELECT f.*
-        FROM mdl_files f
-        JOIN mdl_context ctx ON f.contextid = ctx.id
-        WHERE CONCAT(ctx.path, '/') LIKE '$contextcheck'
-        AND f.filename != '.'
-        ORDER BY f.filesize DESC";
-$filelist = $DB->get_records_sql($sql);
-
-$sql = "SELECT SUM(f.filesize)
-        FROM mdl_files f
-        JOIN mdl_context ctx ON f.contextid = ctx.id
-        WHERE CONCAT(ctx.path, '/') LIKE '$contextcheck'
-        AND f.filename != '.'";
-$sizetotal = $DB->get_field_sql($sql);
+$filelist = block_coursefiles_get_filelist();
+$sizetotal = block_coursefiles_get_total_filesize();
 
 $table = new html_table();
 $table->attributes = array('style' => 'font-size: 80%;');
@@ -72,7 +61,7 @@ foreach ($filelist as $file) {
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($course->fullname);
-echo $OUTPUT->heading(get_string('totalfilesize', 'block_coursefiles'), 3, 'main');
+echo $OUTPUT->heading(get_string('totalfilesize', 'block_coursefiles', display_size($sizetotal)), 3, 'main');
 
 echo html_writer::table($table);
 
