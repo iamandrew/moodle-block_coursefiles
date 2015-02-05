@@ -114,7 +114,7 @@ class block_coursefiles extends block_base {
         $this->content->text .= html_writer::table($table);
 
         $viewmoreurl = new moodle_url('/blocks/coursefiles/view.php', array('courseid' => $COURSE->id));
-        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'));
+        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'), array('class'=>'link-as-button'));
 
         return $this->content;
     }
