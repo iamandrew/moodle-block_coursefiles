@@ -36,7 +36,7 @@ class block_coursefiles extends block_base {
     }
 
     function has_config() {
-        return false;
+        return true;
     }
 
     function instance_allow_multiple() {

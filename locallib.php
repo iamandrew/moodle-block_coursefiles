@@ -59,3 +59,41 @@ function block_coursefiles_get_total_filesize() {
 
     return $sizetotal;
 }
+
+function block_coursefiles_get_all_courses() {
+    global $DB;
+
+    $sql = "SELECT courselist.id AS courseid, courselist.fullname AS name, SUM(courselist.filesize) AS filesize
+            FROM (
+
+                SELECT c.id, c.fullname, cx.contextlevel,f.component, f.filearea, f.filename, f.filesize
+                FROM {context} cx
+                JOIN {course} c ON cx.instanceid=c.id
+                JOIN {files} f ON cx.id=f.contextid
+                WHERE f.filename <> '.'
+                AND f.component NOT IN ('private','draft')
+
+                UNION
+
+                SELECT cm.course, c.fullname, cx.contextlevel,f.component, f.filearea, f.filename, f.filesize
+                FROM {files} f
+                JOIN {context} cx ON f.contextid = cx.id
+                JOIN {course_modules} cm ON cx.instanceid=cm.id
+                JOIN {course} c ON cm.course=c.id
+                WHERE filename <> '.'
+
+                UNION
+
+                SELECT c.id, c.fullname, cx.contextlevel, f.component, f.filearea, f.filename, f.filesize
+                from {block_instances} bi
+                join {context} cx on (cx.contextlevel=80 and bi.id = cx.instanceid)
+                join {files} f on (cx.id = f.contextid)
+                join {context} pcx on (bi.parentcontextid = pcx.id)
+                join {course} c on (pcx.instanceid = c.id)
+                where filename <> '.'
+
+            ) AS courselist GROUP BY courseid ORDER BY filesize DESC";
+    $courselist = $DB->get_records_sql($sql);
+
+    return $courselist;
+}

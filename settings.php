@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Settings for block report page
  *
  * @package    block_coursefiles
  * @copyright  2014 Andrew Davidson
@@ -23,9 +23,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
 
-$plugin->version   = 2015020601;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2013050100;        // Requires this Moodle version.
-$plugin->component = 'block_coursefiles'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.1';
+$ADMIN->add('reports', new admin_externalpage('reportcoursefiles', get_string('coursefilesusagereport', 'block_coursefiles'),
+                                              "$CFG->wwwroot/blocks/coursefiles/all.php", 'block/coursefiles:viewlist'));
+
+// no block settings
+$settings = null;
