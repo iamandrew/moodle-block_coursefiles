@@ -37,6 +37,8 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('course');
 $PAGE->navbar->add(get_string('pluginname', 'block_coursefiles'));
 
+require_capability('block/coursefiles:viewlist', $context);
+
 $filelist = block_coursefiles_get_filelist();
 $sizetotal = block_coursefiles_get_total_filesize();
 
