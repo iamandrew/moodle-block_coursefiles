@@ -92,7 +92,7 @@ function block_coursefiles_get_all_courses() {
                 JOIN {course} c ON (pcx.instanceid = c.id)
                 where filename <> '.'
 
-            ) AS courselist GROUP BY courseid ORDER BY filesize DESC";
+            ) AS courselist GROUP BY courselist.id, courselist.fullname ORDER BY filesize DESC";
     $params = array('private', 'draft');
     $courselist = $DB->get_records_sql($sql, $params);
 
