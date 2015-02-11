@@ -34,7 +34,7 @@ function block_coursefiles_get_filelist($limit=0) {
     $sql = "SELECT f.*
             FROM {files} f
             JOIN {context} ctx ON f.contextid = ctx.id
-            WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
+            WHERE ".$DB->sql_concat('ctx.path', "'/'")." LIKE ?
             AND f.filename != '.'
             ORDER BY f.filesize DESC";
     $params = array($contextcheck);
@@ -52,7 +52,7 @@ function block_coursefiles_get_total_filesize() {
     $sql = "SELECT SUM(f.filesize)
                 FROM {files} f
                 JOIN {context} ctx ON f.contextid = ctx.id
-                WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
+                WHERE ".$DB->sql_concat('ctx.path', "'/'")." LIKE ?
                 AND f.filename != '.'";
     $params = array($contextcheck);
     $sizetotal = $DB->get_field_sql($sql, $params);
@@ -71,7 +71,7 @@ function block_coursefiles_get_all_courses() {
                 JOIN {course} c ON cx.instanceid=c.id
                 JOIN {files} f ON cx.id=f.contextid
                 WHERE f.filename <> '.'
-                AND f.component NOT IN ('private','draft')
+                AND f.component NOT IN (?,?)
 
                 UNION
 
@@ -85,15 +85,16 @@ function block_coursefiles_get_all_courses() {
                 UNION
 
                 SELECT c.id, c.fullname, cx.contextlevel, f.component, f.filearea, f.filename, f.filesize
-                from {block_instances} bi
-                join {context} cx on (cx.contextlevel=80 and bi.id = cx.instanceid)
-                join {files} f on (cx.id = f.contextid)
-                join {context} pcx on (bi.parentcontextid = pcx.id)
-                join {course} c on (pcx.instanceid = c.id)
+                FROM {block_instances} bi
+                JOIN {context} cx ON (cx.contextlevel=80 AND bi.id = cx.instanceid)
+                JOIN {files} f ON (cx.id = f.contextid)
+                JOIN {context} pcx ON (bi.parentcontextid = pcx.id)
+                JOIN {course} c ON (pcx.instanceid = c.id)
                 where filename <> '.'
 
             ) AS courselist GROUP BY courseid ORDER BY filesize DESC";
-    $courselist = $DB->get_records_sql($sql);
+    $params = array('private', 'draft');
+    $courselist = $DB->get_records_sql($sql, $params);
 
     return $courselist;
 }

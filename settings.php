@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 $ADMIN->add('reports', new admin_externalpage('reportcoursefiles', get_string('coursefilesusagereport', 'block_coursefiles'),
-                                              "$CFG->wwwroot/blocks/coursefiles/all.php", 'block/coursefiles:viewlist'));
+                                              new moodle_url('/blocks/coursefiles/all.php'), 'block/coursefiles:viewlist'));
 
-// no block settings
+// No block settings.
 $settings = null;

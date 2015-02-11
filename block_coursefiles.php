@@ -67,22 +67,10 @@ class block_coursefiles extends block_base {
         $contextcheck = $context->path . '/%';
 
         // Get the top file files used on the course by size.
-        $sql = "SELECT f.*
-                FROM {files} f
-                JOIN {context} ctx ON f.contextid = ctx.id
-                WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
-                AND f.filename != '.'
-                ORDER BY f.filesize DESC";
-        $params = array($contextcheck);
-        $filelist = $DB->get_records_sql($sql, $params, 0, 5);
+        $filelist = block_coursefiles_get_filelist(5);
 
         // Get the sum total of file storage usage for the course.
-        $sql = "SELECT SUM(f.filesize)
-                FROM {files} f
-                JOIN {context} ctx ON f.contextid = ctx.id
-                WHERE ".$DB->sql_concat('ctx.path',"'/'")." LIKE ?
-                AND f.filename != '.'";
-        $sizetotal = $DB->get_field_sql($sql, $params);
+        $sizetotal = block_coursefiles_get_total_filesize();
 
         if (!$filelist) {
             $this->content->text = get_string('nofilesoncourse', 'block_coursefiles');
@@ -114,7 +102,7 @@ class block_coursefiles extends block_base {
         $this->content->text .= html_writer::table($table);
 
         $viewmoreurl = new moodle_url('/blocks/coursefiles/view.php', array('courseid' => $COURSE->id));
-        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'), array('class'=>'link-as-button'));
+        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'), array('class' => 'link-as-button'));
 
         return $this->content;
     }

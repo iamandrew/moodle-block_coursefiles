@@ -50,8 +50,8 @@ $totalsize = 0;
 
 foreach ($courselist as $course) {
     $row = new html_table_row();
-    $courselink = new moodle_url('/course/view.php', array('id'=>$course->courseid));
-    $coursefileslink = new moodle_url('/blocks/coursefiles/view.php', array('courseid'=>$course->courseid));
+    $courselink = new moodle_url('/course/view.php', array('id' => $course->courseid));
+    $coursefileslink = new moodle_url('/blocks/coursefiles/view.php', array('courseid' => $course->courseid));
     $row->cells[] = html_writer::link($courselink, $course->name)
                         .' ('.html_writer::link($coursefileslink, get_string('viewcoursefiles', 'block_coursefiles')).')';
     $row->cells[] = display_size($course->filesize);
