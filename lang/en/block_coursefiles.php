@@ -18,11 +18,12 @@
  * Strings for component 'block_coursefiles'
  *
  * @package   block_coursefiles
- * @copyright 2014 Andrew Davidson
+ * @copyright 2016 Andrew Davidson
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $string['author'] = 'Author';
+$string['cachedef_coursefiles'] = 'All caching data for file sizing and listing for courses';
 $string['component'] = 'Component';
 $string['coursefiles:addinstance'] = 'Add a new course files block';
 $string['coursefiles:viewlist'] = 'View list of file usage on a particular course';

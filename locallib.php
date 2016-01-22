@@ -18,7 +18,7 @@
  * Local lib functions
  *
  * @package    block_coursefiles
- * @copyright  2014 Andrew Davidson
+ * @copyright  2016 Andrew Davidson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,6 +26,12 @@ defined('MOODLE_INTERNAL') || die();
 
 function block_coursefiles_get_filelist($limit=0) {
     global $COURSE, $DB;
+
+    $cache = cache::make('block_coursefiles', 'coursefiles');
+    $filelist = $cache->get('filelist_'.$COURSE->id);
+    if ($filelist !== false) {
+        return $filelist;
+    }
 
     $context = context_course::instance($COURSE->id);
     $contextcheck = $context->path . '/%';
@@ -40,11 +46,19 @@ function block_coursefiles_get_filelist($limit=0) {
     $params = array($contextcheck);
     $filelist = $DB->get_records_sql($sql, $params, 0, $limit);
 
+    $cache->set('filelist_'.$COURSE->id, $filelist);
+
     return $filelist;
 }
 
 function block_coursefiles_get_total_filesize() {
     global $COURSE, $DB;
+
+    $cache = cache::make('block_coursefiles', 'coursefiles');
+    $sizetotal = $cache->get('filesize_'.$COURSE->id);
+    if ($sizetotal !== false) {
+        return $sizetotal;
+    }
 
     $context = context_course::instance($COURSE->id);
     $contextcheck = $context->path . '/%';
@@ -57,11 +71,19 @@ function block_coursefiles_get_total_filesize() {
     $params = array($contextcheck);
     $sizetotal = $DB->get_field_sql($sql, $params);
 
+    $cache->set('filesize_'.$COURSE->id, $sizetotal);
+
     return $sizetotal;
 }
 
 function block_coursefiles_get_all_courses() {
     global $DB;
+
+    $cache = cache::make('block_coursefiles', 'coursefiles');
+    $courselist = $cache->get('allcourses');
+    if ($courselist !== false) {
+        return $courselist;
+    }
 
     $sql = "SELECT courselist.id AS courseid, courselist.fullname AS name, SUM(courselist.filesize) AS filesize
             FROM (
@@ -95,6 +117,8 @@ function block_coursefiles_get_all_courses() {
             ) AS courselist GROUP BY courselist.id, courselist.fullname ORDER BY filesize DESC";
     $params = array('private', 'draft');
     $courselist = $DB->get_records_sql($sql, $params);
+
+    $cache->set('allcourses', $courselist);
 
     return $courselist;
 }

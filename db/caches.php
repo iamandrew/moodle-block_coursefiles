@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for block report page
+ * Online users block caches.
  *
  * @package    block_coursefiles
  * @copyright  2016 Andrew Davidson
@@ -23,10 +23,11 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-global $CFG;
 
-$ADMIN->add('reports', new admin_externalpage('reportcoursefiles', get_string('coursefilesusagereport', 'block_coursefiles'),
-                                              new moodle_url('/blocks/coursefiles/all.php'), 'block/coursefiles:viewlist'));
-
-// No block settings.
-$settings = null;
+$definitions = array(
+    'coursefiles' => array(
+        'mode' => cache_store::MODE_SESSION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ),
+);

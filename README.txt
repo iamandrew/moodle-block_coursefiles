@@ -10,6 +10,7 @@ This plugin requires Moodle 2.6
 
 Changes
 =======
+2016-01-22 - Added caching for reports
 2015-02-06 - Added new global report page for viewing all course file usage in one place
 2015-02-05 - Initial version
 
