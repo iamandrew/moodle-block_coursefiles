@@ -5,11 +5,12 @@ Moodle block which provides information on the files currently attached to a cou
 
 Requirements
 ============
-This plugin requires Moodle 2.6
+This plugin requires Moodle 3.2
 
 
 Changes
 =======
+2017-02-28 - Updated display for block with Bootstrap 4 components
 2016-01-22 - Added caching for reports
 2015-02-06 - Added new global report page for viewing all course file usage in one place
 2015-02-05 - Initial version
@@ -20,7 +21,7 @@ Installation
 Install the plugin like any other plugin to folder
 /blocks/coursefiles
 
-See http://docs.moodle.org/26/en/Installing_plugins for details on installing Moodle plugins
+See http://docs.moodle.org/32/en/Installing_plugins for details on installing Moodle plugins
 
 
 Usage
