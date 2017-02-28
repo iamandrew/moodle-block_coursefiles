@@ -40,7 +40,7 @@ require_capability('block/coursefiles:viewlist', $context);
 $courselist = block_coursefiles_get_all_courses();
 
 $table = new html_table();
-$table->attributes = array('style' => 'font-size: 80%;');
+$table->attributes = array('class'=>'table');
 $table->head = array(
     get_string('name'),
     get_string('totalsize', 'block_coursefiles')

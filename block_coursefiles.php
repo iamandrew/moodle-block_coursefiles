@@ -77,32 +77,34 @@ class block_coursefiles extends block_base {
             return $this->content;
         }
 
-        $table = new html_table();
-        $table->attributes = array('style' => 'font-size: 80%;', 'class' => '');
-        $table->head = array(
-            get_string('name'),
-            get_string('author', 'block_coursefiles'),
-            get_string('timecreated', 'block_coursefiles'),
-            get_string('filesize', 'block_coursefiles')
-        );
-
+        $o = '';
+        $o .= html_writer::start_tag('div', array('class'=>'list-group mb-1 m-b-1 px-1 p-x-1'));
         foreach ($filelist as $file) {
-            $row = new html_table_row();
-            $row->cells[] = $file->filename;
-            $row->cells[] = $file->author;
-            $row->cells[] = date('d/m/y', $file->timecreated);
-            $row->cells[] = display_size($file->filesize);
-            $table->data[] = $row;
+            $o .= html_writer::start_tag('li', array('class'=>'list-group-item file-info row px-0 p-x-0'));
+            $o .= html_writer::start_tag('div', array('class'=>'col-8 col-sm-8 fileinfo'));
+            // Print file name
+            $o .= html_writer::tag('strong', $file->filename);
+            // Print author
+            $o .= html_writer::tag('small', get_string('author', 'block_coursefiles').': '.$file->author, array('class'=>'d-block'));
+            // Print timestamp
+            $o .= html_writer::tag('small', get_string('timecreated', 'block_coursefiles').': '.date('d/m/y', $file->timecreated), array('class'=>'d-block'));
+            $o .= html_writer::end_tag('div');
+            $o .= html_writer::start_tag('div', array('class'=>'col-4 col-sm-4 text-right text-sm-right pl-0 p-l-0'));
+            // Print size
+            $o .= html_writer::tag('div', display_size($file->filesize), array('class'=>'badge'));
+            $o .= html_writer::end_tag('div');
+            $o .= html_writer::end_tag('li');
         }
+        $o .= html_writer::end_tag('div');
 
         $sizetotal = get_string('totalfilesize', 'block_coursefiles', display_size($sizetotal));
         $this->content->text .= $OUTPUT->heading($sizetotal, '5');
 
         $this->content->text .= $OUTPUT->heading(get_string('topfive', 'block_coursefiles'), '6');
-        $this->content->text .= html_writer::table($table);
+        $this->content->text .= $o;
 
         $viewmoreurl = new moodle_url('/blocks/coursefiles/view.php', array('courseid' => $COURSE->id));
-        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'), array('class' => 'link-as-button'));
+        $this->content->text .= html_writer::link($viewmoreurl, get_string('viewmore'), array('class' => 'btn btn-default'));
 
         return $this->content;
     }

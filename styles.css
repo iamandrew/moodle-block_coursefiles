@@ -1,7 +1,3 @@
-.block-region .block.block_coursefiles .content {
-    padding: 4px 8px;
-}
-
-.block-region .block.block_coursefiles .content table td {
-    word-break: break-all;
+.block-region .block.block_coursefiles .fileinfo {
+	word-wrap: break-word;
 }
