@@ -28,7 +28,7 @@ function block_coursefiles_get_filelist($limit=0) {
     global $COURSE, $DB;
 
     $cache = cache::make('block_coursefiles', 'coursefiles');
-    $filelist = $cache->get('filelist_'.$COURSE->id);
+    $filelist = $cache->get('filelist_'.$COURSE->id.'_'.$limit);
     if ($filelist !== false) {
         return $filelist;
     }
@@ -46,7 +46,7 @@ function block_coursefiles_get_filelist($limit=0) {
     $params = array($contextcheck);
     $filelist = $DB->get_records_sql($sql, $params, 0, $limit);
 
-    $cache->set('filelist_'.$COURSE->id, $filelist);
+    $cache->set('filelist_'.$COURSE->id.'_'.$limit, $filelist);
 
     return $filelist;
 }
